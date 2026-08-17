@@ -51,6 +51,13 @@ Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` t
 - CPU summary collection
 - Detailed CPU information
 - `/proc/cpuinfo` collection
+- GPU hardware detection
+- PCI vendor and device identification
+- GPU subsystem identification
+- PCIe link speed and width detection
+- GPU driver detection
+- DRM device information
+- Detailed PCI GPU information
 - Local text report generation
 - Terminal-based operation
 
