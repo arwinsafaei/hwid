@@ -31,7 +31,15 @@ The collected information can later be transmitted over the network to a central
 ## How To Use
 To use HWID, you need to follow these steps:
 ### Step 1
-
+Download the ISO file from the GitHub Release page and get a USB flash drive, with a minimum of ~4GB recommended.
+### Step 2
+Use a tool like balenaEtcher or Rufus to flash the ISO onto your USB flash drive.
+### Step 3
+Eject the USB drive from your computer, and plug it into the computer that needs to be identified.
+### Step 4
+Boot from the USB by using your motherboard's Boot Menu. Search what you need to do to access it.
+### Step 5
+Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` to view HWID's output. Replace <SERIALNUMBER> with-your device's serial number shown by HWID.
 
 ## V0.1.2
 
