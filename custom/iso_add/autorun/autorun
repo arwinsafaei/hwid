@@ -252,33 +252,41 @@ echo "[+] COLLECTING BATTERY INFORMATION"
             echo "CYCLE COUNT: $(cat "$BATTERY/cycle_count")"
 
         if [ -f "$BATTERY/energy_full_design" ]; then
-            echo "DESIGN CAPACITY: $(cat "$BATTERY/energy_full_design") µWh"
+            VALUE="$(cat "$BATTERY/energy_full_design") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "DESIGN CAPACITY: ${VALUE} µWh"
         elif [ -f "$BATTERY/charge_full_design" ]; then
-            echo "DESIGN CAPACITY: $(cat "$BATTERY/charge_full_design") µAh"
+            VALUE="$(cat "$BATTERY/charge_full_design") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "DESIGN CAPACITY: ${VALUE} µAh"
         fi
 
         if [ -f "$BATTERY/energy_full" ]; then
-            echo "FULL CHARGE CAPACITY: $(cat "$BATTERY/energy_full") µWh"
+            VALUE="$(cat "$BATTERY/energy_full") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "FULL CHARGE CAPACITY: ${VALUE} µWh"
         elif [ -f "$BATTERY/charge_full" ]; then
-            echo "FULL CHARGE CAPACITY: $(cat "$BATTERY/charge_full") µAh"
+            VALUE="$(cat "$BATTERY/charge_full") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "FULL CHARGE CAPACITY: ${VALUE} µAh"
         fi
 
         if [ -f "$BATTERY/energy_now" ]; then
-            echo "CURRENT ENERGY: $(cat "$BATTERY/energy_now") µWh"
+            VALUE="$(cat "$BATTERY/energy_now") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "CURRENT ENERGY: ${VALUE} µWh"
         elif [ -f "$BATTERY/charge_now" ]; then
-            echo "CURRENT CHARGE: $(cat "$BATTERY/charge_now") µAh"
+            VALUE="$(cat "$BATTERY/charge_now") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "CURRENT CHARGE: ${VALUE} µAh"
         fi
 
-       [ -f "$BATTERY/voltage_now" ] &&
-           echo "VOLTAGE: $(cat "$BATTERY/voltage_now") µV"
+        if [ -f "$BATTERY/voltage_now" ]; then
+            VALUE="$(cat "$BATTERY/voltage_now" 2>/dev/null)"
+            [ -n "$VALUE" ] && echo "VOLTAGE: ${VALUE} µV"
+        fi
 
-       [ -f "$BATTERY/current_now" ] &&
-           echo "CURRENT: $(cat "$BATTERY/current_now") µA"
+        if [ -f "$BATTERY/current_now" ]; then
+            VALUE="$(cat "$BATTERY/current_now") 2>/dev/null"
+            [ -n "$VALUE" ] && echo "CURRENT: ${VALUE} µA"
+        fi
 
-       echo
-
-       echo "--- RAW BATTERY PROPERTIES ---"
-       cat "$BATTERY/uevent" 2>/dev/null || true
+        echo "--- RAW BATTERY PROPERTIES ---"
+        cat "$BATTERY/uevent" 2>/dev/null || true
     done
 
     if [ "$BATTERIES_FOUND" -eq 0 ]; then
