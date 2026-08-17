@@ -39,7 +39,7 @@ Eject the USB drive from your computer, and plug it into the computer that needs
 ### Step 4
 Boot from the USB by using your motherboard's Boot Menu. Search what you need to do to access it.
 ### Step 5
-Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` to view HWID's output. Replace <SERIALNUMBER> with-your device's serial number shown by HWID.
+Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` to view HWID's output. Replace <SERIALNUMBER> with your device's serial number shown by HWID.
 
 ### Currently Implemented
 
