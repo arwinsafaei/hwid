@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+VERSION="V0.1.3"
+
+clear
+
+echo "==================================="
+echo "            HWID-$VERSION"
+echo "      HARDWARE IDENTIFICATION"
+echo "==================================="
+echo
+echo "[+] HWID-$VERSION STARTING..."
+echo
+
+SERIAL="$(dmidecode -s system-serial-number 2>/dev/null)"
+
+if [ -z "$SERIAL" ]; then
+    SERIAL="UNKNOWN"
+fi
+
+REPORT="/tmp/${SERIAL}.txt"
+
+{
+    echo "==================================="
+    echo "            HWID-$VERSION"
+    echo "      HARDWARE IDENTIFICATION"
+    echo "==================================="
+    echo
+    echo "SERIAL NUMBER: $SERIAL"
+    echo
+} > "$REPORT"
+
+echo "SYSTEM SERIAL NUMBER: $SERIAL"
+echo
+
+echo "============== CPU ==============="
+echo
+
+echo "[+] COLLECTING CPU INFORMATION..."
+
+{
+    echo "=============== CPU ==============="
+    echo 
+    echo "--- CPU SUMMARY ---"
+    lscpu 2>/dev/null || echo "CPU INFORMATION UNAVAILABLE"
+    echo
+    echo "--- DETAILED CPU INFORMATION ---"
+    cat /proc/cpuinfo 2>/dev/null || echo "CPU INFORMATION UNAVAILABLE"
+    echo
+    echo "CPU INFORMATION COLLECTION COMPLETE"
+    echo
+} >> "$REPORT"
+
+echo "[+] CPU INFORMATION COLLECTED"
+echo
+
+echo "=============== GPU ==============="
+echo
+
+echo "[+] COLLECTING GPU INFORMATION"
+
+{
+    echo "=============== GPU ==============="
+    echo
+    echo "--- PCI GPU DEVICES ---"
+
+    for GPU in /sys/class/drm/card*/device; do
+        if [ -d "$GPU" ]; then
+            echo
+            echo "GPU DEVICE: $GPU"
+
+            [ -f "$GPU/vendor" ] && echo "PCI VENDOR ID: $(cat"$GPU/vendor")"
+            [ -f "$GPU/device" ] && echo "PCI DEVICE ID: $(cat"$GPU/device")"
+            [ -f "$GPU/subsystem_vendor" ] && echo "SUBSYSTEM VENDOR: $(cat"$GPU/subsystem_vendor")"
+            [ -f "$GPU/subsystem_device" ] && echo "SUBSYSTEM_DEVICE: $(cat"$GPU/subsystem_device")"
+            [ -f "$GPU/current_link_speed" ] && echo "PCIe LINK SPEED: $(cat"$GPU/current_link_speed")"
+            [ -f "$GPU/current_link_width" ] && echo "PCIe LINK WIDTH: $(cat"$GPU/current_link_width")"
+            [ -f "$GPU/max_link_speed" ] && echo "MAX PCIe LINK SPEED: $(cat"$GPU/max_link_speed")"
+            [ -f "$GPU/max_link_width" ] && echo "MAX PCIe LINK WIDTH: $(cat"$GPU/max_link_width")"
+
+            if [ -L "$GPU/driver" ]; then
+                echo "DRIVER: $(basename "$(readlink "$GPU/driver")")"
+            fi
+        fi
+    done
+
+    echo
+    echo "--- DRM DEVICES ---"
+    ls -la /sys/class/drm/ 2>/dev/null || true
+
+    echo
+    echo "--- PCI DETAILED INFORMATION ---"
+    lspci -vv 2>/dev/null | grep -A 30 -Ei 'VGA compatible|3D controller|Display controller' \
+        || echo "DETAILED GPU INFORMATION UNAVAILABLE"
+
+    echo
+    echo "GPU INFORMATION COLLECTION COMPLETE"
+    echo
+} >> "$REPORT"
+
+echo "[+] GPU INFORMATION COLLECTED"
+echo
+
+echo "[+] HWID-$VERSION HARDWARE IDENTIFICATION COMPLETE" | tee -a "$REPORT"
+echo
+echo "Press ENTER to continue..."
+read -r

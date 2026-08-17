@@ -1,0 +1,15 @@
+# SystemRescue ISO
+iso/*.iso
+
+# Generated ISO builds
+build/*.iso
+
+# Temporary build files
+work/*
+!work/.gitkeep
+
+# macOS
+.DS_Store
+
+# Editor temporary files
+*.swp
