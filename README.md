@@ -8,7 +8,7 @@ It runs from a USB drive using a customized SystemRescue environment and present
 
 ## Current Version
 
-**V0.1.3**
+**V0.1.4**
 
 ## Purpose
 
@@ -56,6 +56,10 @@ Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` t
 - GPU driver detection
 - DRM device information
 - Detailed PCI GPU information
+- System memory summary
+- `/proc/meminfo` collection
+- Physical RAM module detection
+- RAM manufacturer and module information
 - Local text report generation
 - Terminal-based operation
 
