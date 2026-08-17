@@ -8,7 +8,7 @@ It runs from a USB drive using a customized SystemRescue environment and present
 
 ## Current Version
 
-**V0.1.5**
+**V0.1.6**
 
 ## Purpose
 
@@ -68,6 +68,15 @@ Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` t
 - SMART information when available
 - Storage device sector and block information
 - Removable storage detection
+- Battery detection
+- Battery manufacturer and model identification
+- Battery serial number detection
+- Battery technology detection
+- Battery charge and status information
+- Battery cycle count
+- Battery capacity information
+- Battery voltage and current information
+- Raw battery property collection
 - Terminal-based operation
 
 ### Report Location
