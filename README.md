@@ -8,7 +8,7 @@ It runs from a USB drive using a customized SystemRescue environment and present
 
 ## Current Version
 
-**V0.1.4**
+**V0.1.5**
 
 ## Purpose
 
@@ -61,6 +61,13 @@ Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` t
 - Physical RAM module detection
 - RAM manufacturer and module information
 - Local text report generation
+- Storage device detection
+- Block device information
+- HDD/SSD identification
+- NVMe device detection
+- SMART information when available
+- Storage device sector and block information
+- Removable storage detection
 - Terminal-based operation
 
 ### Report Location
