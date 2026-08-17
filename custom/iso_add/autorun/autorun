@@ -69,14 +69,14 @@ echo "[+] COLLECTING GPU INFORMATION"
             echo
             echo "GPU DEVICE: $GPU"
 
-            [ -f "$GPU/vendor" ] && echo "PCI VENDOR ID: $(cat"$GPU/vendor")"
-            [ -f "$GPU/device" ] && echo "PCI DEVICE ID: $(cat"$GPU/device")"
-            [ -f "$GPU/subsystem_vendor" ] && echo "SUBSYSTEM VENDOR: $(cat"$GPU/subsystem_vendor")"
-            [ -f "$GPU/subsystem_device" ] && echo "SUBSYSTEM_DEVICE: $(cat"$GPU/subsystem_device")"
-            [ -f "$GPU/current_link_speed" ] && echo "PCIe LINK SPEED: $(cat"$GPU/current_link_speed")"
-            [ -f "$GPU/current_link_width" ] && echo "PCIe LINK WIDTH: $(cat"$GPU/current_link_width")"
-            [ -f "$GPU/max_link_speed" ] && echo "MAX PCIe LINK SPEED: $(cat"$GPU/max_link_speed")"
-            [ -f "$GPU/max_link_width" ] && echo "MAX PCIe LINK WIDTH: $(cat"$GPU/max_link_width")"
+            [ -f "$GPU/vendor" ] && echo "PCI VENDOR ID: $(cat "$GPU/vendor")"
+            [ -f "$GPU/device" ] && echo "PCI DEVICE ID: $(cat "$GPU/device")"
+            [ -f "$GPU/subsystem_vendor" ] && echo "SUBSYSTEM VENDOR: $(cat "$GPU/subsystem_vendor")"
+            [ -f "$GPU/subsystem_device" ] && echo "SUBSYSTEM DEVICE: $(cat "$GPU/subsystem_device")"
+            [ -f "$GPU/current_link_speed" ] && echo "PCIe LINK SPEED: $(cat "$GPU/current_link_speed")"
+            [ -f "$GPU/current_link_width" ] && echo "PCIe LINK WIDTH: $(cat "$GPU/current_link_width")"
+            [ -f "$GPU/max_link_speed" ] && echo "MAX PCIe LINK SPEED: $(cat "$GPU/max_link_speed")"
+            [ -f "$GPU/max_link_width" ] && echo "MAX PCIe LINK WIDTH: $(cat "$GPU/max_link_width")"
 
             if [ -L "$GPU/driver" ]; then
                 echo "DRIVER: $(basename "$(readlink "$GPU/driver")")"
