@@ -41,8 +41,6 @@ Boot from the USB by using your motherboard's Boot Menu. Search what you need to
 ### Step 5
 Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` to view HWID's output. Replace <SERIALNUMBER> with-your device's serial number shown by HWID.
 
-## V0.1.2
-
 ### Currently Implemented
 
 - Bootable SystemRescue-based environment
