@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="V0.1.3"
+VERSION="V0.1.5"
 
 clear
 
@@ -92,13 +92,120 @@ echo "[+] COLLECTING GPU INFORMATION"
     echo "--- PCI DETAILED INFORMATION ---"
     lspci -vv 2>/dev/null | grep -A 30 -Ei 'VGA compatible|3D controller|Display controller' \
         || echo "DETAILED GPU INFORMATION UNAVAILABLE"
-
     echo
+
     echo "GPU INFORMATION COLLECTION COMPLETE"
     echo
 } >> "$REPORT"
 
 echo "[+] GPU INFORMATION COLLECTED"
+echo
+
+echo "=============== RAM ==============="
+echo
+
+echo "[+] COLLECTING RAM INFORMATION"
+
+{
+    echo "=============== RAM ==============="
+    echo
+
+    echo "--- SYSTEM MEMORY SUMMARY ---"
+    free -h 2>/dev/null || echo "MEMORY SUMMARY UNAVAILABLE"
+    echo
+
+    echo "--- MEMORY INFORMATION ---"
+    cat /proc/meminfo 2>/dev/null || echo "MEMORY INFORMATION UNAVAILABLE"
+    echo
+
+    echo "--- PHYSICAL MEMORY MODULES ---"
+    dmidecode -t memory 2>/dev/null || echo "PHYSICAL MEMORY INFORMATION UNAVAILABLE"
+    echo    
+
+    echo "RAM INFORMATION COLLECTION COMPLETE"
+    echo
+} >> "$REPORT"
+
+echo "[+] RAM INFORMATION COLLECTED"
+echo
+
+echo "============= STORAGE ============="
+echo
+
+echo "[+] COLLECTING STORAGE INFORMATION"
+
+{
+    echo "============= STORAGE ============="
+    echo
+
+    echo "--- BLOCK DEVICES ---"
+    lsblk -d -o NAME,PATH,MODEL,SERIAL,SIZE,TYPE,TRAN,ROTA,RM,RO 2>/dev/null \
+        || echo "DETAILED BLOCK DEVICE INFORMATION UNAVAILABLE"
+    echo
+
+    echo "--- NVMe DEVICES ---"
+    if command -v nvme >/dev/null 2>&1; then
+        nvme list 2>/dev/null || echo "NO NVMe DEVICES DETECTED"
+    else
+        echo "NVMe TOOL UNAVAILABLE"
+    fi
+    echo
+
+    echo "--- SMART INFORMATION ---"
+
+    if command -v smartctl >/dev/null 2>&1; then
+        for DEVICE in /dev/sd? /dev/nvme?n1; do
+            [ -e "$DEVICE" ] || continue
+
+            echo
+            echo "SMART DEVICE: $DEVICE"
+            smartctl -i "$DEVICE" 2>/dev/null || \
+                echo "SMART INFORMATION UNAVAILABLE FOR $DEVICE"
+        done
+    else
+        echo "SMART TOOL UNAVAILABLE"
+    fi
+    echo
+
+    echo "--- STORAGE DEVICE INFORMATION ---"
+
+    for DEVICE in /sys/block/*; do
+        [ -e "$DEVICE" ] || continue
+
+        NAME="$(basename "$DEVICE")"
+
+        case "$NAME" in
+            loop*|ram*|sr*|fd*)
+                continue
+                ;;
+
+        esac
+        echo
+
+        echo "DEVICE /dev/$NAME"
+
+        [ -f "$DEVICE/size" ] &&
+            echo "SECTOR COUNT: $(cat "$DEVICE/size")"
+
+        [ -f "$DEVICE/queue/logical_block_size" ] &&
+            echo "LOGICAL BLOCK SIZE: $(cat "$DEVICE/queue/logical_block_size")"
+
+        [ -f "$DEVICE/queue/physical_block_size" ] &&
+            echo "PHYSICAL BLOCK SIZE: $(cat "$DEVICE/queue/physical_block_size")"
+
+        [ -f "$DEVICE/queue/rotational" ] &&
+            echo "ROTATIONAL: $(cat "$DEVICE/queue/rotational")"
+
+        [ -f "$DEVICE/removable" ] &&
+            echo "REMOVABLE: $(cat "$DEVICE/removable")"
+    done
+    echo
+
+    echo "STORAGE INFORMATION COLLECTION COMPLETE"
+    echo
+} >> "$REPORT"
+
+echo "[+] STORAGE INFORMATION COLLECTED"
 echo
 
 echo "[+] HWID-$VERSION HARDWARE IDENTIFICATION COMPLETE" | tee -a "$REPORT"
