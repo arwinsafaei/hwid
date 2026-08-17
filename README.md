@@ -8,7 +8,7 @@ It runs from a USB drive using a customized SystemRescue environment and present
 
 ## Current Version
 
-**V0.1.2**
+**V0.1.3**
 
 ## Purpose
 
