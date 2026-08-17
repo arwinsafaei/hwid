@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="V0.1.5"
+VERSION="V0.1.6"
 
 clear
 
@@ -206,6 +206,92 @@ echo "[+] COLLECTING STORAGE INFORMATION"
 } >> "$REPORT"
 
 echo "[+] STORAGE INFORMATION COLLECTED"
+echo
+
+echo "============= BATTERY ============="
+echo
+
+echo "[+] COLLECTING BATTERY INFORMATION"
+
+{
+    echo "============= BATTERY ============="
+    echo
+
+    BATTERIES_FOUND=0
+
+    echo "--- BATTERY DEVICES ---"
+    echo
+
+    for BATTERY in /sys/class/power_supply/BAT*; do
+        [ -d "$BATTERY" ] || continue
+
+        BATTERIES_FOUND=$((BATTERIES_FOUND + 1))
+        NAME="$(basename "$BATTERY")"
+
+        echo "BATTERY: $NAME"
+
+        [ -f "$BATTERY/manufacturer" ] &&
+            echo "MANUFACTURER: $(cat "$BATTERY/manufacturer")"
+
+        [ -f "$BATTERY/model_name" ] &&
+            echo "MODEL: $(cat "$BATTERY/model_name")"
+
+        [ -f "$BATTERY/serial_number" ] &&
+            echo "SERIAL NUMBER: $(cat "$BATTERY/serial_number")"
+
+        [ -f "$BATTERY/technology" ] &&
+            echo "TECHNOLOGY: $(cat "$BATTERY/technology")"
+
+        [ -f "$BATTERY/status" ] &&
+            echo "STATUS: $(cat "$BATTERY/status")"
+
+        [ -f "$BATTERY/capacity" ] &&
+            echo "CHARGE: $(cat "$BATTERY/capacity")"
+
+        [ -f "$BATTERY/cycle_count" ] &&
+            echo "CYCLE COUNT: $(cat "$BATTERY/cycle_count")"
+
+        if [ -f "$BATTERY/energy_full_design" ]; then
+            echo "DESIGN CAPACITY: $(cat "$BATTERY/energy_full_design") µWh"
+        elif [ -f "$BATTERY/charge_full_design" ]; then
+            echo "DESIGN CAPACITY: $(cat "$BATTERY/charge_full_design") µAh"
+        fi
+
+        if [ -f "$BATTERY/energy_full" ]; then
+            echo "FULL CHARGE CAPACITY: $(cat "$BATTERY/energy_full") µWh"
+        elif [ -f "$BATTERY/charge_full" ]; then
+            echo "FULL CHARGE CAPACITY: $(cat "$BATTERY/charge_full") µAh"
+        fi
+
+        if [ -f "$BATTERY/energy_now" ]; then
+            echo "CURRENT ENERGY: $(cat "$BATTERY/energy_now") µWh"
+        elif [ -f "$BATTERY/charge_now" ]; then
+            echo "CURRENT CHARGE: $(cat "$BATTERY/charge_now") µAh"
+        fi
+
+       [ -f "$BATTERY/voltage_now" ] &&
+           echo "VOLTAGE: $(cat "$BATTERY/voltage_now") µV"
+
+       [ -f "$BATTERY/current_now" ] &&
+           echo "CURRENT: $(cat "$BATTERY/current_now") µA"
+
+       echo
+
+       echo "--- RAW BATTERY PROPERTIES ---"
+       cat "$BATTERY/uevent" 2>/dev/null || true
+    done
+
+    if [ "$BATTERIES_FOUND" -eq 0 ]; then
+        echo "NO BATTERY DEVICES DETECTED"
+    fi
+
+    echo
+
+    echo "BATTERY INFORMATION COLLECTION COMPLETE"
+    echo
+} >> "$REPORT"
+
+echo "[+] BATTERY INFORMATION COLLECTED"
 echo
 
 echo "[+] HWID-$VERSION HARDWARE IDENTIFICATION COMPLETE" | tee -a "$REPORT"
