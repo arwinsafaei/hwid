@@ -368,7 +368,7 @@ echo "[+] COLLECTING SYSTEM AND MOTHERBOARD INFORMATION"
 
     echo "--- MANUFACTURING / DATE INFORMATION ---"
 
-    SYSTEM_DMI="$(dmidecode -t 2>/dev/null grep -i -E 'date|manufactur|build|born || true')"
+    SYSTEM_DMI="$(dmidecode -t system 2>/dev/null | grep -i -E 'date|manufactur|build|born' || true)"
 
     if [ -n "$SYSTEM_DMI" ]; then
         echo "$SYSTEM_DMI"
@@ -392,7 +392,7 @@ echo "[+] COLLECTING SYSTEM AND MOTHERBOARD INFORMATION"
 
     echo "--- CHASSIS DMI DATE FIELDS ---"
 
-    CHASSIS_DMI="$(dmidecode -t chassis 2>/dev/null | grep -i -E 'date manufactur|build|born' || true)"
+    CHASSIS_DMI="$(dmidecode -t chassis 2>/dev/null | grep -i -E 'date|manufactur|build|born' || true)"
 
     if [ -n "$CHASSIS_DMI" ]; then
         echo "$CHASSIS_DMI"
@@ -423,7 +423,7 @@ echo "[+] COLLECTING SYSTEM AND MOTHERBOARD INFORMATION"
 
     echo "--- RAW SMBIOS INFORMATION ---"
 
-    dmidecode 2>/dev/null || echo "SMBIOS INFORMATION UNAVALABLE"
+    dmidecode 2>/dev/null || echo "SMBIOS INFORMATION UNAVAILABLE"
 
     echo
 
