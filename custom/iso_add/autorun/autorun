@@ -365,14 +365,50 @@ echo "[+] COLLECTING SYSTEM AND MOTHERBOARD INFORMATION"
     echo "ASSET TAG: ${CHASSIS_TAG:-UNAVAILABLE}"
     echo
 
-    echo "--- OEM / MANUFACTURING DATE INFORMATION ---"
+    echo "--- MANUFACTURING / DATE INFORMATION ---"
 
-    DMI_DATES="$(dmidecode 2>/dev/null | grep -i -E 'bron|manufactur|build date' || true)"
+    SYSTEM_DMI="$(dmidecode -t 2>/dev/null grep -i -E 'date|manufactur|build|born || true')"
 
-    if [ -n "$DMI_DATES" ]; then
-        echo "$DMI_DATES"
+    if [ -n "$SYSTEM_DMI" ]; then
+        echo "$SYSTEM_DMI"
     else
-        echo "OEM MANUFACTURING DATE UNAVAILABLE"
+        echo "NO SYSTEM DMI DATE FIELDS EXPOSED"
+    fi
+
+    echo
+
+    echo "--- BASEBOARD DMI DATE FIELDS ---"
+
+    BASEBOARD_DMI="$(dmidecode -t baseboard 2>/dev/null | grep -i -E 'date|manufactur|build|born' || true)"
+
+    if [ -n "$BASEBOARD_DMI" ]; then
+        echo "$BASEBOARD_DMI"
+    else
+        echo "NO BASEBOARD DMI DATE FIELDS EXPOSED"
+    fi
+
+    echo
+
+    echo "--- CHASSIS DMI DATE FIELDS ---"
+
+    CHASSIS_DMI="$(dmidecode -t chassis 2>/dev/null | grep -i -E 'date manufactur|build|born' || true)"
+
+    if [ -n "$CHASSIS_DMI" ]; then
+        echo "$CHASSIS_DMI"
+    else
+        echo "NO CHASSIS DMI DATE FIELDS EXPOSED"
+    fi
+
+    echo
+
+    echo "--- RAW SMBIOS DATE / OEM FIELDS ---"
+
+    RAW_DMI="$(dmidecode 2>/dev/null | grep -i -E 'born|manufacture date|manufacturing date|build date|sbds' || true)"
+
+    if [ -n "$RAW_DMI" ]; then
+        echo "$RAW_DMI"
+    else
+        echo "NO RELEVANT RAW SMBIOS DATE FIELDS FOUND"
     fi
 
     echo
