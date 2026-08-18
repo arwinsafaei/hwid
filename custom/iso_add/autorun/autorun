@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="V0.1.6"
+VERSION="V0.1.7"
 
 clear
 
@@ -300,6 +300,96 @@ echo "[+] COLLECTING BATTERY INFORMATION"
 } >> "$REPORT"
 
 echo "[+] BATTERY INFORMATION COLLECTED"
+echo
+
+echo "====== SYSTEM / MOTHERBOARD ======="
+echo
+
+echo "[+] COLLECTING SYSTEM AND MOTHERBOARD INFORMATION"
+
+{
+    echo "====== SYSTEM / MOTHERBOARD ======="
+    echo
+
+    echo "--- SYSTEM INFORMATION ---"
+
+    SYSTEM_MANUFACTURER="$(dmidecode -s system-manufacturer 2>/dev/null)"
+    SYSTEM_PRODUCT="$(dmidecode -s system-product-name 2>/dev/null)"
+    SYSTEM_SERIAL="$(dmidecode -s system-serial-number 2>/dev/null)"
+    SYSTEM_UUID="$(dmidecode -s system-uuid 2>/dev/null)"
+    SYSTEM_SKU="$(dmidecode -s system-sku-number 2>/dev/null)"
+    SYSTEM_FAMILY="$(dmidecode -s system-family 2>/dev/null)"
+
+    echo "MANUFACTURER: ${SYSTEM_MANUFACTURER:-UNAVAILABLE}"
+    echo "PRODUCT: ${SYSTEM_PRODUCT:-UNAVAILABLE}"
+    echo "SERIAL NUMBER: ${SYSTEM_SERIAL:-UNAVAILABLE}"
+    echo "UUID: ${SYSTEM_UUID:-UNAVAILABLE}"
+    echo "SKU: ${SYSTEM_SKU:-UNAVAILABLE}"
+    echo "FAMILY: ${SYSTEM_FAMILY:-UNAVAILABLE}"
+    echo
+
+    echo "--- MOTHERBOARD INFORMATION ---"
+
+    BASEBOARD_MANUFACTURER="$(dmidecode -s baseboard-manufacturer 2>/dev/null)"
+    BASEBOARD_PRODUCT="$(dmidecode -s baseboard-product-name 2>/dev/null)"
+    BASEBOARD_SERIAL="$(dmidecode -s baseboard-serial-number 2>/dev/null)"
+    BASEBOARD_VERSION="$(dmidecode -s baseboard-version 2>/dev/null)"
+
+    echo "MANUFACTURER: $(BASEBOARD_MANUFACTURER:-UNAVAILABLE)"
+    echo "PRODUCT: $(BASEBOARD_PRODUCT:-UNAVAILABLE)"
+    echo "SERIAL NUMBER: $(BASEBOARD_SERIAL:-UNAVAILABLE)"
+    echo "VERSION: $(BASEBOARD_VERSION:-UNAVAILABLE)"
+    echo
+
+    echo "--- BIOS INFORMATION ---"
+
+    BIOS_VENDOR="$(dmidecode -s bios-vendor 2>/dev/null)"
+    BIOS_VERSION="$(dmidecode -s bios-version 2>/dev/null)"
+    BIOS_DATE="$(dmidecode -s bios-release-date 2>/dev/null)"
+
+    echo "VENDOR: ${BIOS_VENDOR:-UNAVAILABLE}"
+    echo "VERSION: ${BIOS_VERSION:-UNAVAILABLE}"
+    echo "RELEASE DATE: ${BIOS_DATE:-UNAVAILABLE}"
+    echo
+
+    echo "--- CHASSIS INFORMATION ---"
+
+    CHASSIS_MANUFACTURER="$(dmidecode -s chassis-manufacturer 2>/dev/null)"
+    CHASSIS_TYPE="$(dmidecode -s chassis-type 2>/dev/null)"
+    CHASSIS_SERIAL="$(dmidecode -s chassis-serial-number 2>/dev/null)"
+    CHASSIS_TAG="$(dmidecode -s chassis-asset-tag 2>/dev/null)"
+
+    echo "MANUFACTURER: ${CHASSIS_MANUFACTURER:-UNAVAILABLE}"
+    echo "TYPE: ${CHASSIS_TYPE:-UNAVAILABLE}"
+    echo "SERIAL NUMBER: ${CHASSIS_SERIAL:-UNAVAILABLE}"
+    echo "ASSET TAG: ${CHASSIS_TAG:-UNAVAILABLE}"
+    echo
+
+    echo "--- OEM / MANUFACTURING DATE INFORMATION ---"
+
+    DMI_DATES="$(dmidecode 2>/dev/null | grep -i -E 'bron|manufactur|build date' || true)"
+
+    if [ -n "$DMI_DATES" ]; then
+        echo "$DMI_DATES"
+    else
+        echo "OEM MANUFACTURING DATE UNAVAILABLE"
+    fi
+
+    echo
+
+    echo "--- RAW DMI INFORMATION ---"
+
+    dmidecode -t system -t baseboard -t bios -t chassis 2>/dev/null \
+        || echo "DMI INFORMATION UNAVAILABLE"
+
+    echo
+
+    echo " SYSTEM AND MOTHERBOARD INFORMATION COLLECTION COMPLETE"
+    echo
+
+} >> "$REPORT"
+
+echo "[+] SYSTEM AND MOTHERBOARD INFORMATION COLLECTED"
 echo
 
 echo "[+] HWID-$VERSION HARDWARE IDENTIFICATION COMPLETE" | tee -a "$REPORT"
