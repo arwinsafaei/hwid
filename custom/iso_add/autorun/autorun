@@ -231,47 +231,47 @@ echo "[+] COLLECTING BATTERY INFORMATION"
         echo "BATTERY: $NAME"
 
         [ -f "$BATTERY/manufacturer" ] &&
-            echo "MANUFACTURER: $(cat "$BATTERY/manufacturer")"
+            echo "MANUFACTURER: $(cat "$BATTERY/manufacturer" 2>/dev/null)"
 
         [ -f "$BATTERY/model_name" ] &&
-            echo "MODEL: $(cat "$BATTERY/model_name")"
+            echo "MODEL: $(cat "$BATTERY/model_name" 2>/dev/null)"
 
         [ -f "$BATTERY/serial_number" ] &&
-            echo "SERIAL NUMBER: $(cat "$BATTERY/serial_number")"
+            echo "SERIAL NUMBER: $(cat "$BATTERY/serial_number" 2>/dev/null)"
 
         [ -f "$BATTERY/technology" ] &&
-            echo "TECHNOLOGY: $(cat "$BATTERY/technology")"
+            echo "TECHNOLOGY: $(cat "$BATTERY/technology" 2>/dev/null)"
 
         [ -f "$BATTERY/status" ] &&
-            echo "STATUS: $(cat "$BATTERY/status")"
+            echo "STATUS: $(cat "$BATTERY/status" 2>/dev/null)"
 
         [ -f "$BATTERY/capacity" ] &&
-            echo "CHARGE: $(cat "$BATTERY/capacity")"
+            echo "CHARGE: $(cat "$BATTERY/capacity" 2>/dev/null)"
 
         [ -f "$BATTERY/cycle_count" ] &&
-            echo "CYCLE COUNT: $(cat "$BATTERY/cycle_count")"
+            echo "CYCLE COUNT: $(cat "$BATTERY/cycle_count" 2>/dev/null)"
 
         if [ -f "$BATTERY/energy_full_design" ]; then
-            VALUE="$(cat "$BATTERY/energy_full_design") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/energy_full_design" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "DESIGN CAPACITY: ${VALUE} µWh"
         elif [ -f "$BATTERY/charge_full_design" ]; then
-            VALUE="$(cat "$BATTERY/charge_full_design") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/charge_full_design" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "DESIGN CAPACITY: ${VALUE} µAh"
         fi
 
         if [ -f "$BATTERY/energy_full" ]; then
-            VALUE="$(cat "$BATTERY/energy_full") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/energy_full" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "FULL CHARGE CAPACITY: ${VALUE} µWh"
         elif [ -f "$BATTERY/charge_full" ]; then
-            VALUE="$(cat "$BATTERY/charge_full") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/charge_full" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "FULL CHARGE CAPACITY: ${VALUE} µAh"
         fi
 
         if [ -f "$BATTERY/energy_now" ]; then
-            VALUE="$(cat "$BATTERY/energy_now") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/energy_now" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "CURRENT ENERGY: ${VALUE} µWh"
         elif [ -f "$BATTERY/charge_now" ]; then
-            VALUE="$(cat "$BATTERY/charge_now") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/charge_now" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "CURRENT CHARGE: ${VALUE} µAh"
         fi
 
@@ -281,10 +281,11 @@ echo "[+] COLLECTING BATTERY INFORMATION"
         fi
 
         if [ -f "$BATTERY/current_now" ]; then
-            VALUE="$(cat "$BATTERY/current_now") 2>/dev/null"
+            VALUE="$(cat "$BATTERY/current_now" 2>/dev/null)"
             [ -n "$VALUE" ] && echo "CURRENT: ${VALUE} µA"
         fi
 
+        echo
         echo "--- RAW BATTERY PROPERTIES ---"
         cat "$BATTERY/uevent" 2>/dev/null || true
     done
@@ -294,9 +295,9 @@ echo "[+] COLLECTING BATTERY INFORMATION"
     fi
 
     echo
-
     echo "BATTERY INFORMATION COLLECTION COMPLETE"
     echo
+
 } >> "$REPORT"
 
 echo "[+] BATTERY INFORMATION COLLECTED"
