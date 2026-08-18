@@ -421,6 +421,12 @@ echo "[+] COLLECTING SYSTEM AND MOTHERBOARD INFORMATION"
 
     echo
 
+    echo "--- RAW SMBIOS INFORMATION ---"
+
+    dmidecode 2>/dev/null || echo "SMBIOS INFORMATION UNAVALABLE"
+
+    echo
+
     echo " SYSTEM AND MOTHERBOARD INFORMATION COLLECTION COMPLETE"
     echo
 
