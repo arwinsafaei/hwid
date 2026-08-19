@@ -26,7 +26,7 @@ The goal is to collect as much useful hardware information as possible, includin
 - Windows licensing information
 - Other low-level hardware information
 
-The collected information can later be transmitted over the network to a central system for inventory processing.
+The collected information can later be transmitted over the network to HWID-Server for inventory processing/data exports.
 
 ## How To Use
 To use HWID, you need to follow these steps:
