@@ -444,74 +444,86 @@ echo "[+] COLLECTING WINDOWS LICENSING INFORMATION"
     echo "======== WINDOWS LICENSING ========"
     echo
 
-    echo "--- WINDOWS LICENSING ---"
-
-    OA3_FOUND=0
-    OA3_KEY=""
-
-    for OA3 in /sys/firmware/efi/efivars/*OA3-*; do
-        [ -f "$OA3" ] || continue
-
-        case "$(basename "$OA3")" in
-            *_LOCK-*)
-                continue
-                ;;
-        esac
-
-        OA3_FOUND=1
-
-        KEY_PARTS="$(grep -aobE '[A-Za-z0-9]{5}' "$OA3" 2>/dev/null | \
-            awk -F: '$1 >= 24 && $1 <= 60 {print $2}' | \
-            head -5)"
-
-        if [ "$(printf '%s\n' "$KEY_PARTS" | grep -c .)" -eq 5 ]; then
-            OA3_KEY="$(printf '%s\n' "$KEY_PARTS" | paste -sd-)"
-            break
-        fi
-    done
-
-    if [ "$OA3_FOUND" -eq 1 ]; then
-        echo "OA3 FIRMWARE DATA DETECTED"
-
-        if [ -n "$OA3_KEY" ]; then
-            echo "LICENSE TYPE: OEM"
-            echo "PRODUCT KEY: $OA3_KEY"
-        else
-            echo "PRODUCT KEY NOT EXPOSED"
-        fi
-    else
-        echo "OA3 FIRMWARE DATA NOT FOUND"
-        echo "PRODUCT KEY NOT FOUND"
-    fi
-
-    echo
+    WINDOWS_FOUND=0
+    WINDOWS_KEY=""
 
     echo "--- WINDOWS INSTALLATION ---"
 
-    WINDOWS_FOUND=0
+    for DEVICE in /dev/*; do
 
-    for MOUNT in /mnt/* /run/media/*/* /media/*; do
-        [ -d "$MOUNT" ] || continue
+        [ -b "$DEVICE" ] || continue
 
-        if [ -f "$MOUNT/Windows/System32/config/SOFTWARE" ]; then
-            WINDOWS_FOUND=1
+        FSTYPE="$(blkid -o value -s TYPE "$DEVICE" 2>/dev/null)"
 
-            echo "WINDOWS INSTALLATION DETECTED"
-            echo "WINDOWS PARTITION: $MOUNT"
+        [ "$FSTYPE" = "ntfs" ] || continue
 
-            echo
+        TEST_MNT="/tmp/hwid-ntfs-$(basename "$DEVICE")"
+
+        mkdir -p "$TEST_MNT"
+
+        if mount -t ntfs -o ro "$DEVICE" "$TEST_MNT" 2>/dev/null; then
+
+            if [ -f "$TEST_MNT/Windows/System32/config/SOFTWARE" ]; then
+
+                WINDOWS_FOUND=1
+
+                echo "WINDOWS INSTALLATION DETECTED"
+
+                echo "WINDOWS PARTITION: $DEVICE"
+
+                echo
+
+                echo "--- WINDOWS REGISTRY ---"
+
+                TEMP_HIVE="/tmp/hwid-software-$$"
+
+                if cp "$TEST_MNT/Windows/System32/config/SOFTWARE" "$TEMP_HIVE" 2>/dev/null; then
+                    REG_OUTPUT="$(
+                        printf '%s\n' \
+                            'cd Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' \
+                            'cat BackupProductKeyDefault' \
+                            'q' \
+                            'n' |
+                        chntpw -e "$TEMP_HIVE" 2>/dev/null
+                    )"
+
+                    WINDOWS_KEY="$(
+                        printf '%s\n' "$REG_OUTPUT" |
+                        grep -oE '[A-Z0-9]{5}(-[A-Z0-9{5}]){4}' |
+                        head -1
+                    )"
+
+                    if [ -n "$WINDOWS_KEY" ]; then
+                        echo "BACKUP PRODUCT KEY: $WINDOWS_KEY"
+                    else
+                        echo "BACKUP PRODUCT KEY NOT FOUND"
+                    fi
+
+                    rm -f "$TEMP_HIVE"
+
+                else
+                    echo "UNABLE TO READ SOFTWARE HIVE"
+                fi
+
+                umount "$TEST_MNT" 2>/dev/null
+                rmdir "$TEST_MNT" 2>/dev/null
+
+                break
+            fi
+
         fi
+
     done
 
     if [ "$WINDOWS_FOUND" -eq 0 ]; then
         echo "WINDOWS INSTALLATION NOT DETECTED"
-
-        echo
+        echo "BACKUP PRODUCT KEY NOT AVAILABLE"
     fi
 
     echo
 
-    echo "WINDOWS LICENSING INFORMATION COLLECTION COMPLETE"
+    echo "WINDOWS LICENSING INFORMATION COLLECTED"
+
     echo
 
 } >> "$REPORT"
