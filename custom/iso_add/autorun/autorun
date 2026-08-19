@@ -489,8 +489,10 @@ echo "[+] COLLECTING WINDOWS LICENSING INFORMATION"
 
                     WINDOWS_KEY="$(
                         printf '%s\n' "$REG_OUTPUT" |
-                        grep -oE '[A-Z0-9]{5}(-[A-Z0-9{5}]){4}' |
-                        head -1
+                        tr -d '\r' |
+                        grep -oEi '[A-Za-z0-9]{5}(-[A-Za-z0-9]{5}){4}' |
+                        head -n 1 |
+                        tr '[:lower:]' '[:upper:]'
                     )"
 
                     if [ -n "$WINDOWS_KEY" ]; then
