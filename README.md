@@ -8,7 +8,7 @@ It runs from a USB drive using a customized SystemRescue environment and present
 
 ## Current Version
 
-**V0.1.6**
+**V0.1.7**
 
 ## Purpose
 
@@ -79,6 +79,24 @@ Let HWID run and once completed, press ENTER and use `cat /tmp/<SERIALNUMBER>` t
 - Battery voltage and current information
 - Raw battery property collection
 - Terminal-based operation
+- System manufacturer detection
+- System product detection
+- System UUID detection
+- System SKU detection
+- System family detection
+- Motherboard manufacturer detection
+- Motherboard product detection
+- Motherboard serial number detection
+- Motherboard version detection
+- BIOS vendor detection
+- BIOS version detection
+- BIOS release date detection
+- Chassis information detection
+- SMBIOS information collection
+- Windows installation detection
+- Offline Windows registry detection
+- Windows `BackupProductKeyDefault` detection
+- Windows product key extraction
 
 ### Report Location
 
